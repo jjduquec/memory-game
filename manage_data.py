@@ -2,6 +2,9 @@ import random
 
 
 matrix=[["" for i in range(3)] for x in range(4) ]
+names=[]
+buttons=[] 
+
 
 def fill_matrix(item): 
     filled=False  
