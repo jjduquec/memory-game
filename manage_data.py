@@ -30,4 +30,9 @@ def gen_matrix_byNumbers():
     return matrix  
 
 
+def gen_matrix_byColors():  
+    data=[("red","red"),("blue","blue"),("green","green"),("yellow","yellow"),("orange","orange"),("purple","purple")]
+    for pair in data:
+        fill_matrix(pair[0])  
+        fill_matrix(pair[1])
 
