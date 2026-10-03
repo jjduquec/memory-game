@@ -1,5 +1,6 @@
 import tkinter as tk  
-from manage_data import gen_matrix_byNumbers, gen_matrix_byColors
+from manage_data import GenData
+
 
 
 class Game: 
@@ -10,9 +11,9 @@ class Game:
         self.matrix=parameters['matrix'] 
         self.correct_pair=parameters['correct_pair']
         self.wrong_pair=parameters['wrong_pair']
+        self.is_gameBycolors=parameters['byColors']
         self.values=[]
         self.buttons=[] 
-
 
         for r in range(4):
           for c in range(3):  
@@ -21,9 +22,32 @@ class Game:
             button.grid(row=r,column=c,padx=5,pady=5)
 
     def on_click(self,button,value):
-        button.config(state="disabled",text=value,bg="black",fg="white")
+
         self.buttons.append(button)
         self.values.append(value)
+
+        if not self.is_gameBycolors:  
+            button.config(state="disabled",text=value,bg="black",fg="white")
+        else:  
+            #show assigned color  
+            button.config(state="disabled",bg=value)
+            self.correct_pair=value
+        
+        
+        if len(self.values)==2:  
+            if self.values[0]!=self.values[1]:
+                first_button, second_button = self.buttons
+                first_button.config(bg=self.wrong_pair)
+                second_button.config(bg=self.wrong_pair)
+                self.root.after(1000, self.reset_buttons, first_button, second_button)
+            else:
+                first_button, second_button = self.buttons
+                first_button.config(bg=self.correct_pair)
+                second_button.config(bg=self.correct_pair)
+            self.values.clear()
+            self.buttons.clear()
+
+        
         if len(self.values)==2:  
             if self.values[0]!=self.values[1]:
                 first_button, second_button = self.buttons
@@ -47,7 +71,9 @@ class GameByNumbers(Game):
 
     def __init__(self,root): 
         self.parameters={}
-        self.parameters['matrix']=gen_matrix_byNumbers()
+        generator=GenData()
+        self.parameters['byColors']=False
+        self.parameters['matrix']=generator.gen_matrix_byNumbers()
         self.parameters['root']=root
         #colors for correct and wrong pairs
         self.parameters['correct_pair']="green"
@@ -55,9 +81,21 @@ class GameByNumbers(Game):
         super().__init__(self.parameters)
 
 
+class GameByColors(Game):
+
+    def __init__(self,root): 
+            self.parameters={}
+            generator=GenData()
+            self.parameters['byColors']=True
+            self.parameters['matrix']=generator.gen_matrix_byColors()
+            self.parameters['root']=root
+            #colors for correct and wrong pairs
+            self.parameters['correct_pair']=None
+            self.parameters['wrong_pair']="gray"
+            super().__init__(self.parameters)
 
 
 
 root=tk.Tk()  
-game=GameByNumbers(root) 
+game=GameByColors(root) 
 root.mainloop()
